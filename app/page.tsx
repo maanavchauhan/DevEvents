@@ -1,9 +1,14 @@
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
 import {IEvent} from "@/database";
+import {cacheLife} from "next/cache";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const Page = async ()  => {
+    // Makes the loading much faster for others by reducing traffic .
+    // But will take hourse before the new events are shown as the page is stored in cache.
+    'use cache';
+    cacheLife('hours')
     // Promise of a response.
     const response = await fetch(`${BASE_URL}/api/events`);
     // Promie of JSON Parsed (like unpacking an object).
@@ -21,7 +26,7 @@ const Page = async ()  => {
                 <h3>Featured events</h3>
                 <ul className='events'>
                     {events && events.length>0 && events.map((event: IEvent) => (
-                        <li key={event.title}>
+                        <li key={event.title} className="list-none">
                             <EventCard {...event} />
                         </li>
                     ))}
