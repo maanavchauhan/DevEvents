@@ -40,8 +40,16 @@ const EventDetailsPage = async (
     const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
         next: { revalidate: 60 }
     });
+    if (request.status === 404) return notFound();
+    if (!request.ok) {
+        throw new Error(`Failed to fetch event "${slug}" (${request.status})`);
+        }
+
     const {event} = await request.json();
     if (!event) return notFound();
+    //
+    // const {event} = await request.json();
+    // if (!event) return notFound();
     const bookings = 100;
     const similarEvents:IEvent[] = await getSimilarEventsBySlug(slug);
 
@@ -85,7 +93,7 @@ const EventDetailsPage = async (
                         <h2>Book Your Spot</h2>
                         {bookings>0? (
                             <p className="text-sm">
-                                Join {bookings} people who
+                                Join {bookings} people who have already booked their spot.
                             </p>
                         ):(
                             <p className="text-sm">Be the first to book your spot!</p>

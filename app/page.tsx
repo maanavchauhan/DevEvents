@@ -6,7 +6,7 @@ import {cacheLife} from "next/cache";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const Page = async ()  => {
     // Makes the loading much faster for others by reducing traffic .
-    // But will take hourse before the new events are shown as the page is stored in cache.
+    // But will take hours before the new events are shown as the page is stored in cache.
     'use cache';
     cacheLife('hours')
     // Promise of a response.
