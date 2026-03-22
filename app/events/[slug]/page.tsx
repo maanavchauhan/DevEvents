@@ -1,9 +1,7 @@
-import ExploreBtn from "@/components/ExploreBtn";
 import {IEvent} from "@/database";
 import EventCard from "@/components/EventCard";
 import {notFound} from "next/navigation";
 import Image from "next/image";
-import {JSX} from "react";
 import BookEvent from "@/components/BookEvent";
 import {getSimilarEventsBySlug} from "@/lib/actions/event.actions";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -39,12 +37,13 @@ const EventDetailsPage = async (
     ) => {
     // Destructure the slug from the params object.
     const {slug} = await params;
-    const request = await fetch(`${BASE_URL}/api/events/${slug}`);
+    const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
+        next: { revalidate: 60 }
+    });
     const {event} = await request.json();
     if (!event) return notFound();
     const bookings = 100;
     const similarEvents:IEvent[] = await getSimilarEventsBySlug(slug);
-    console.log({similarEvents});
 
     return (
         <section id="event">
