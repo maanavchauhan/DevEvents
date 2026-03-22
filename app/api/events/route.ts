@@ -4,6 +4,11 @@ import connectToDatabase from "@/lib/mongodb";
 import Event from "@/database/event.model";
 
 export async function POST(req: NextRequest) {
+    // Prevent people from creating events without being logged in.
+    const session = await getServerSession();
+    if (!session || !session.user?.isAdmin) {
+        return NextResponse.json({message: "Unauthorized. Admin access required."}, {status: 401});
+    }
     try {
         await connectToDatabase();
         const formData = await req.formData();
